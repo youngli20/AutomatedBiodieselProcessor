@@ -275,6 +275,12 @@ void keypadEvent (KeypadEvent key)
   }
 }
 
+/**
+ * Function Name: getTemp
+ * Function Prototype: void getTemp()
+ * Description: Sets temp_one and temp_two to the temperature of ___?
+ * Unknown: ___ is current state of biodeisel processor?
+ */
 void getTemp ()
 {
   temp_sensor_one.requestTemperatures();
@@ -284,6 +290,7 @@ void getTemp ()
   int temp_two = temp_sensor_two.getTempCByIndex(0);
 }
 
+
 void getLevel ()
 {
   unsigned int uS_one = level_sensor_one.ping();
@@ -292,6 +299,7 @@ void getLevel ()
   int level_one = uS_one / US_ROUNDTRIP_CM;
   int level_two = uS_two / US_ROUNDTRIP_CM;
 }
+
 
 void getColor ()
 {
