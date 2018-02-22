@@ -40,8 +40,8 @@ const int SDA_PIN = 20;
 const int SCL_PIN = 21;
 
 const int WASHER_DRYER_PUMP_PIN = 22; // relay one pin
-
-const int RELAY_ONE_PIN   = 22; //Washer Dryer Pump
+//delete this later
+//const int RELAY_ONE_PIN   = 22; //Washer Dryer Pump
 const int RELAY_TWO_PIN   = 24; //Reaction Chamber Pump
 const int RELAY_THREE_PIN = 26; //Washer Dryer Heating Element  
 const int RELAY_FOUR_PIN  = 28; //Reaction Chamber Heating Element
