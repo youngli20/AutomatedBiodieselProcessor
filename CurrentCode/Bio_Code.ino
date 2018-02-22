@@ -39,6 +39,8 @@ const int TEMP_SENSOR_TWO_PIN = 53;
 const int SDA_PIN = 20;
 const int SCL_PIN = 21;
 
+const int WASHER_DRYER_PUMP_PIN = 22; // relay one pin
+
 const int RELAY_ONE_PIN   = 22; //Washer Dryer Pump
 const int RELAY_TWO_PIN   = 24; //Reaction Chamber Pump
 const int RELAY_THREE_PIN = 26; //Washer Dryer Heating Element  
@@ -170,6 +172,13 @@ void loop ()
   }
 }
 
+/**
+ * Function Name: keyPadEvent
+ * Description: Updates input array to record input. 
+ * Unknown: I don't know what the purpose of this method is because we don't use input anywhere.
+ * Parameters: key
+ * Return: None
+ */
 void keypadEvent (KeypadEvent key)
 {
   switch (keypad.getState()) {
