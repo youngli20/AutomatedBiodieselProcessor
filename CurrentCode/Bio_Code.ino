@@ -40,20 +40,34 @@ const int SDA_PIN = 20;
 const int SCL_PIN = 21;
 
 const int WASHER_DRYER_PUMP_PIN = 22; // relay one pin
-//delete this later
-//const int RELAY_ONE_PIN   = 22; //Washer Dryer Pump
-const int RELAY_TWO_PIN   = 24; //Reaction Chamber Pump
-const int RELAY_THREE_PIN = 26; //Washer Dryer Heating Element  
-const int RELAY_FOUR_PIN  = 28; //Reaction Chamber Heating Element
+const int REACTION_CHAMBER_PUMP_PIN   = 24; //RELAY_TWO_PIN
+const int WASHER_DRYER_HEATING_PIN = 26; //Washer Dryer Heating Element  
+const int REACTION_CHAMBER_HEATING_PIN  = 28; //Reaction Chamber Heating Element
 
-const int VALVE_ONE_PIN   = 31; //Drain for Washer Dryer
-const int VALVE_TWO_PIN   = 33; //Fills the reactor
-const int VALVE_THREE_PIN = 35; //Drain for the Reactor
-const int VALVE_FOUR_PIN  = 37; //Drain from Reactor to the W/D
-const int VALVE_FIVE_PIN  = 39; //Drain Waster from W/D (Color Sensor)
+const int WASHER_DRYER_DRAIN_PIN   = 31; //Drain for Washer Dryer
+const int REACTOR_FILL_PIN   = 33; //Fills the reactor
+const int REACTOR_DRAIN_PIN = 35; //Drain for the Reactor
+const int DRAIN_REACTOR_TO_WD_PIN  = 37; //Drain from Reactor to the W/D
+const int DRAIN_WASTER_WD_PIN  = 39; //Drain Waster from W/D (Color Sensor)
 const int VALVE_SIX_PIN   = -1; //TBH
-const int VALVE_SEVEN_PIN = 43; //Feeds methoxide from carboy to Reactor
-const int VALVE_EIGHT_PIN = 45; //Feeds water from carboy to mister ontop of W/D
+const int FEED_METHOXIDE_REACTOR_PIN = 43; //Feeds methoxide from carboy to Reactor
+const int FEED_WATER_MISTER_PIN = 45; //Feeds water from carboy to mister ontop of W/D
+
+/* OLD CONTANT NAMES IN CASE WE NEED THEM:
+const int RELAY_ONE_PIN   = 22; //Washer Dryer Pump
+const int RELAYd_TWO_PIN   = 24; //Reaction Chamber Pump
+const int RELAYd_THREE_PIN = 26; //Washer Dryer Heating Element  
+const int RELAYd_FOUR_PIN  = 28; //Reaction Chamber Heating Element
+
+const int VALVEd_ONE_PIN   = 31; //Drain for Washer Dryer
+const int VALVEd_TWO_PIN   = 33; //Fills the reactor
+const int VALVEd_THREE_PIN = 35; //Drain for the Reactor
+const int VALVEd_FOUR_PIN  = 37; //Drain from Reactor to the W/D
+const int VALVEd_FIVE_PIN  = 39; //Drain Waster from W/D (Color Sensor)
+const int VALVEd_SIX_PIN   = -1; //TBH
+const int VALVEd_SEVEN_PIN = 43; //Feeds methoxide from carboy to Reactor
+const int VALVE_dEIGHT_PIN = 45; //Feeds water from carboy to mister ontop of W/D
+*/
 
 byte KEYPAD_ROW_PINS[KEYPAD_ROWS]  = { 9, 8, 7, 6 };
 byte KEYPAD_COL_PINS[KEYPAD_COLS]  = { 5, 4, 3, 2 };
@@ -110,18 +124,18 @@ void setup ()
   Serial.begin(9600);
   
   // End Keypad Initialization
-  pinMode(RELAY_ONE_PIN,   OUTPUT);
-  pinMode(RELAY_TWO_PIN,   OUTPUT);
-  pinMode(RELAY_THREE_PIN, OUTPUT);
-  pinMode(RELAY_FOUR_PIN,  OUTPUT);
-  pinMode(VALVE_ONE_PIN,   OUTPUT);
-  pinMode(VALVE_TWO_PIN,   OUTPUT);
-  pinMode(VALVE_THREE_PIN, OUTPUT);
-  pinMode(VALVE_FOUR_PIN,  OUTPUT);
-  pinMode(VALVE_FIVE_PIN,  OUTPUT);
+  pinMode(WASHER_DRYER_PUMP_PIN,   OUTPUT);
+  pinMode(REACTION_CHAMBER_PUMP_PIN,   OUTPUT);
+  pinMode(WASHER_DRYER_HEATING_PIN, OUTPUT);
+  pinMode(REACTION_CHAMBER_HEATING_PIN,  OUTPUT);
+  pinMode(WASHER_DRYER_DRAIN_PIN,   OUTPUT);
+  pinMode(REACTOR_FILL_PIN,   OUTPUT);
+  pinMode(REACTOR_DRAIN_PIN, OUTPUT);
+  pinMode(DRAIN_REACTOR_TO_WD_PIN,  OUTPUT);
+  pinMode(DRAIN_WASTER_WD_PIN,  OUTPUT);
   pinMode(VALVE_SIX_PIN,   OUTPUT);
-  pinMode(VALVE_SEVEN_PIN, OUTPUT);
-  pinMode(VALVE_EIGHT_PIN, OUTPUT);
+  pinMode(FEED_METHOXIDE_REACTOR_PIN, OUTPUT);
+  pinMode(FEED_WATER_MISTER_PIN, OUTPUT);
   
   // Start LCD
   lcd.begin(16, 2);
@@ -331,20 +345,20 @@ void getColor ()
 void TransferToReactor()
 {
   current_step = 1;
-  digitalWrite(VALVE_THREE_PIN, LOW);
-  digitalWrite(VALVE_ONE_PIN, HIGH);
-  digitalWrite(VALVE_SEVEN_PIN, HIGH);
-  digitalWrite(RELAY_TWO_PIN,HIGH);
+  digitalWrite(REACTOR_DRAIN_PIN, LOW);
+  digitalWrite(WASHER_DRYER_DRAIN_PIN, HIGH);
+  digitalWrite(FEED_METHOXIDE_REACTOR_PIN, HIGH);
+  digitalWrite(REACTION_CHAMBER_PUMP_PIN,HIGH);
   //decide how long the pump needs to be run, either delay or level sensor
-  digitalWrite(RELAY_TWO_PIN,LOW);
-  digitalWrite(VALVE_ONE_PIN, LOW);
+  digitalWrite(REACTION_CHAMBER_PUMP_PIN,LOW);
+  digitalWrite(WASHER_DRYER_DRAIN_PIN, LOW);
 }
 
 //STEP EIGHT IN PSEUDOCODE DOC
 void HeatReactor()
 {
   current_step = 2;
-  digitalWrite(RELAY_FOUR_PIN,HIGH);
+  digitalWrite(REACTION_CHAMBER_HEATING_PIN,HIGH);
   
   if(temp_one >= 50){   //Move to step 3 once temp is 50c
   	current_step = 3;
@@ -355,60 +369,60 @@ void HeatReactor()
 void Reaction()
 {
   current_step = 3;
-  digitalWrite(VALVE_THREE_PIN, HIGH);
-  digitalWrite(RELAY_ONE_PIN, HIGH);
-  digitalWrite(VALVE_TWO_PIN, HIGH);
+  digitalWrite(REACTOR_DRAIN_PIN, HIGH);
+  digitalWrite(WASHER_DRYER_PUMP_PIN, HIGH);
+  digitalWrite(REACTOR_FILL_PIN, HIGH);
   
   //need a delay to mix the methoxide and wvo
   
-  digitalWrite(RELAY_ONE_PIN, LOW);
-  digitalWrite(VALVE_THREE_PIN, LOW);
+  digitalWrite(WASHER_DRYER_PUMP_PIN, LOW);
+  digitalWrite(REACTOR_DRAIN_PIN, LOW);
 }
 
  //Pseudoecode step:10
 void TransferToWD()
 {
-  digitalWrite(VALVE_TWO_PIN, LOW);
-	digitalWrite(VALVE_FOUR_PIN, HIGH);
-  digitalWrite(RELAY_ONE_PIN, HIGH);
+  digitalWrite(REACTOR_FILL_PIN, LOW);
+	digitalWrite(DRAIN_REACTOR_TO_WD_PIN, HIGH);
+  digitalWrite(WASHER_DRYER_PUMP_PIN, HIGH);
   //need to decide how to leave pump on untill all of the liquid from the reactor has been pumped out
-  digitalWrite(RELAY_ONE_PIN, LOW);
+  digitalWrite(WASHER_DRYER_PUMP_PIN, LOW);
 }
 
 //Pseudocode step 11
 void BDSeperation()
 {
-	digitalWrite(VALVE_FIVE_PIN, HIGH);
+	digitalWrite(DRAIN_WASTER_WD_PIN, HIGH);
   //drian Glycerol untill the light sesor detects biodeisel. 
-  digitalWrite(VALVE_FIVE_PIN, LOW);
+  digitalWrite(DRAIN_WASTER_WD_PIN, LOW);
 }
 
 //pseudocode step 12,13, & 14
 void WashBD()
 {
-	digitalWrite(RELAY_THREE_PIN, HIGH);
+	digitalWrite(WASHER_DRYER_HEATING_PIN, HIGH);
   digitalWrite(VALVE_SIX_PIN, HIGH);
-  digitalWrite(VALVE_EIGHT_PIN,HIGH); //feed misters
+  digitalWrite(FEED_WATER_MISTER_PIN,HIGH); //feed misters
   //TURN ON BUBBLER
   //STOP WATER WHEN ENOUGH IS ADDED
   digitalWrite(VALVE_SIX_PIN, LOW);
-  digitalWrite(VALVE_EIGHT_PIN,LOW); //close misters
+  digitalWrite(FEED_WATER_MISTER_PIN,LOW); //close misters
   //WAIT FOR IT TO SETTLE
   
 }
 //Pseudocode step 15
 void WaterSeperation()
 {
-	digitalWrite(VALVE_FIVE_PIN, HIGH);
+	digitalWrite(DRAIN_WASTER_WD_PIN, HIGH);
   //drian WATER untill the light sesor detects biodeisel. 
-  digitalWrite(VALVE_FIVE_PIN, LOW);
+  digitalWrite(DRAIN_WASTER_WD_PIN, LOW);
 }
 
 //DRY BD STEP 16
 void DryBD()
 {
-	digitalWrite(RELAY_TWO_PIN, HIGH);
+	digitalWrite(REACTION_CHAMBER_PUMP_PIN, HIGH);
   //time
-  digitalWrite(RELAY_TWO_PIN, LOW);
+  digitalWrite(REACTION_CHAMBER_PUMP_PIN, LOW);
 }
 
